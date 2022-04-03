@@ -1,4 +1,3 @@
-from pprint import pprint
 from datetime import date
 from datetime import datetime
 import vk_api
@@ -6,13 +5,9 @@ import heapq
 
 
 
-
-
-
-
 class VkApi:
 
-    def __init__(self, login, password, version='5.131'):
+    def __init__(self, login, password):
         self.vk_session = vk_api.VkApi(login, password)
         self.vk_session.auth()
         self.vk = self.vk_session.get_api()
@@ -71,13 +66,6 @@ class VkApi:
         return match_info
 
 
-vkapi = VkApi(LOGIN, PASSWORD)
-user_info = vkapi.get_user_info(USER_ID)
-convert_user_info = vkapi.convert_user_info(user_info)
-params = vkapi.get_search_params(convert_user_info)
-matches = vkapi.search_people(params)
-match_info = vkapi.get_match_info('58138110')
-pprint(match_info)
 
 
 
