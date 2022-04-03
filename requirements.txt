@@ -1,3 +1,2 @@
-decouple
-requests
 datetime
+vk_api
