@@ -2,6 +2,8 @@ from pprint import pprint
 from datetime import date
 from datetime import datetime
 import vk_api
+import heapq
+
 
 
 
@@ -55,15 +57,28 @@ class VkApi:
             matches.append(item['id'])
         return matches
 
-
+    def get_match_info(self, match):
+        match_info = {}
+        match_info['url'] = f'https://vk.com/id{match}'
+        photo_info = {}
+        photo = self.vk.photos.get(owner_id=match, album_id='profile', extended='1')
+        for item in photo['items']:
+            photo_info[item['sizes'][-1]['url']] = item['likes']['count'] + item['comments']['count']
+        three_best_photos = heapq.nlargest(3, photo_info, key=lambda k: photo_info[k])
+        match_info['photo1'] = three_best_photos[0]
+        match_info['photo2'] = three_best_photos[1]
+        match_info['photo3'] = three_best_photos[2]
+        return match_info
 
 
 vkapi = VkApi(LOGIN, PASSWORD)
 user_info = vkapi.get_user_info(USER_ID)
 convert_user_info = vkapi.convert_user_info(user_info)
 params = vkapi.get_search_params(convert_user_info)
-peoples = vkapi.search_people(params)
-pprint(peoples)
+matches = vkapi.search_people(params)
+match_info = vkapi.get_match_info('58138110')
+pprint(match_info)
+
 
 
 
