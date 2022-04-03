@@ -1,15 +1,12 @@
-import vk_api
 from vkapi import VkApi
-import heapq
 from longpoll import VkBot
-from vk_api.longpoll import VkLongPoll, VkEventType
-from random import randrange
-from datetime import date
-from datetime import datetime
+from vk_api.longpoll import VkEventType
 
 
 
-
+LOGIN =
+PASSWORD =
+TOKEN =
 
 
 
@@ -20,8 +17,6 @@ def find_matches(user_id, login, password):
     params = vkapi.get_search_params(convert_user_info)
     matches = vkapi.search_people(params)
     return matches
-
-
 
 def chat_bot(login, password):
     vkapi = VkApi(login, password)
@@ -44,15 +39,15 @@ def chat_bot(login, password):
                                                        f'{match_info["photo2"]} \n'
                                                        f'{match_info["photo3"]} \n'
                                                        f'Нравится? (+\-)')
-                        event = vkbot.longpoll.check()[0]
-                        if event.type == VkEventType.MESSAGE_NEW:
-                            if event.to_me:
-                                request = event.text
-                                if request == '+':
-                                    vkbot.write_msg(event.user_id, "Скорее знакомься ;)")
-                                    break
-                                if request == '-':
-                                    pass
+                        for event in vkbot.longpoll.listen():
+                            if event.type == VkEventType.MESSAGE_NEW:
+                                if event.to_me:
+                                    request = event.text
+                                    if request == '+':
+                                        vkbot.write_msg(event.user_id, "Скорее знакомься ;)")
+                                        break
+                                    if request == '-':
+                                        pass
                 else:
                     vkbot.write_msg(event.user_id, "Не поняла вашего ответа...")
 

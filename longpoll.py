@@ -1,5 +1,5 @@
 import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.longpoll import VkLongPoll
 from random import randrange
 
 

@@ -64,12 +64,3 @@ class VkApi:
         match_info['photo2'] = three_best_photos[1]
         match_info['photo3'] = three_best_photos[2]
         return match_info
-
-
-
-
-
-
-
-
-
