@@ -27,9 +27,9 @@ class DataBase:
                         )
 
         user_match = Table('user_match', self.metadata,
-                               Column('user_id', ForeignKey('user.id')),
-                               Column('match_id', ForeignKey('match.id'))
-                               )
+                            Column('user_id', ForeignKey('user.id')),
+                            Column('match_id', ForeignKey('match.id'))
+                            )
 
         self.metadata.create_all(self.engine)
 
