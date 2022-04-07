@@ -37,9 +37,14 @@ class DataBase:
         self.ins_user = insert(user)
         self.connection.execute(self.ins_user, user_info)
 
-    def insert_desired(self, match_info):
+    def insert_desired(self, match_info, user_id):
         self.ins_match = insert(match)
         self.connection.execute(self.ins_match, match_info)
+        self.ins_user_match = insert(user_match)
+        self.connection.execute(self.ins_user_match,
+                                {'user_id': user_id,
+                                 'match_id': match_info['id']}
+                                )
 
 
 
