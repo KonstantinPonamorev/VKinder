@@ -37,7 +37,7 @@ class DataBase:
         self.ins_user = insert(user)
         self.connection.execute(self.ins_user, user_info)
 
-    def insert_desired(self, match_info, user_id):
+    def insert_match(self, match_info, user_id):
         self.ins_match = insert(match)
         self.connection.execute(self.ins_match, match_info)
         self.ins_user_match = insert(user_match)
@@ -45,6 +45,11 @@ class DataBase:
                                 {'user_id': user_id,
                                  'match_id': match_info['id']}
                                 )
+    def check_user(self):
+        ... #проверка есть ли пользователь уже в базе
+
+    def check_match(self):
+        ... #проверка есть ли пара в базе
 
 
 
