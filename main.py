@@ -21,17 +21,19 @@ URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
 def find_matches(user_id, login, password):
-    '''поиск совпадений'''
+    '''Поиск совпадений и запись в базу данных'''
 
+    db = DataBaseWork(URL)
     vkapi = VkApi(login, password)
     user_info = vkapi.get_user_info(user_id)
     convert_user_info = vkapi.convert_user_info(user_info)
+    db.insert_user(convert_user_info)
     params = vkapi.get_search_params(convert_user_info)
     matches = vkapi.search_people(params)
     return matches
 
 def chat_bot(login, password):
-    '''основная логика чат-бота'''
+    '''Основная логика чат-бота'''
 
     vkapi = VkApi(login, password)
     vkbot = VkBot(TOKEN)
@@ -50,6 +52,7 @@ def chat_bot(login, password):
                     matches = find_matches(event.user_id, login, password)
                     for match in matches:
                         match_info = vkapi.get_match_info(int(match))
+                        db.insert_match(match_info, event.user_id)
                         vkbot.write_msg(event.user_id, f'{match_info["url"]} \n'
                                                        f'{match_info["photo1"]} \n'
                                                        f'{match_info["photo2"]} \n'
