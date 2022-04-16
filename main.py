@@ -21,6 +21,8 @@ URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
 def find_matches(user_id, login, password):
+    '''поиск совпадений'''
+
     vkapi = VkApi(login, password)
     user_info = vkapi.get_user_info(user_id)
     convert_user_info = vkapi.convert_user_info(user_info)
@@ -29,6 +31,8 @@ def find_matches(user_id, login, password):
     return matches
 
 def chat_bot(login, password):
+    '''основная логика чат-бота'''
+
     vkapi = VkApi(login, password)
     vkbot = VkBot(TOKEN)
     newdb = NewDataBase(URL)

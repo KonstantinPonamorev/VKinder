@@ -13,8 +13,11 @@ URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
 class NewDataBase:
+    '''Класс для создания новой БД'''
 
     def __init__(self, URL):
+        '''Определение класса подключение к БД'''
+
         self.engine = sqlalchemy.create_engine(URL)
         self.connection = self.engine.connect()
         self.metadata = MetaData()
@@ -45,16 +48,23 @@ class NewDataBase:
 
 
 class DataBaseWork:
+    '''Класс для работы с БД'''
 
     def __init__(self, URL):
+        '''Определение класса, подключение к БД'''
+
         self.engine = sqlalchemy.create_engine(URL)
         self.connection = self.engine.connect()
 
     def insert_user(self, user_info):
+        '''Добавление нового пользователя'''
+
         self.ins_user = insert(user)
         self.connection.execute(self.ins_user, user_info)
 
     def insert_match(self, match_info, user_id):
+        '''Добавление пар для пользователя'''
+
         self.ins_match = insert(match)
         self.connection.execute(self.ins_match, match_info)
         self.ins_user_match = insert(user_match)
@@ -64,11 +74,15 @@ class DataBaseWork:
                                 )
 
     def check_user(self, user_id):
+        '''Проверка есть ли пользователь в БД'''
+
         self.check = select([user]).where(user.c.user_id = user_id)
         exist = self.connection.execute(self.check)
         return exist
 
     def delete_match(self, user_id):
+        '''Удалить отношения с парами для пользователя'''
+
         self.delete = delete(user_match).where(user_match.c.user_id.like(user_id))
         self.connection.execute(self.delete)
 

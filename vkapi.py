@@ -6,23 +6,32 @@ import heapq
 
 
 class VkApi:
+    '''Класс для работы с API ВК'''
 
     def __init__(self, login, password):
+        '''Определение класса, подключение к API ВК'''
+
         self.vk_session = vk_api.VkApi(login, password)
         self.vk_session.auth()
         self.vk = self.vk_session.get_api()
 
     def calculate_age(self, bdate):
+        '''Высчитать возраст от даты рождения'''
+
         born = datetime.strptime(bdate, '%d.%m.%Y')
         age = date.today().year - born.year - (
                     (date.today().month, date.today().day) < (date.today().month, date.today().day))
         return age
 
     def get_user_info(self, user_id):
+        '''Получить информацию о пользователе'''
+
         res = self.vk.users.get(user_ids=user_id, fields='bdate, sex, city')[0]
         return res
 
     def convert_user_info(self, info):
+        '''Сконвертировать инфо о пользователе'''
+
         user_info = {}
         user_info['sex'] = info['sex']
         user_info['city'] = info['city']['id']
@@ -30,6 +39,8 @@ class VkApi:
         return user_info
 
     def get_search_params(self, user_info):
+        '''Получить параметры для подбора пары'''
+
         params = {}
         params['sort'] = '0'
         params['count'] = 20
@@ -44,6 +55,8 @@ class VkApi:
         return params
 
     def search_people(self, params):
+        '''Поиск пары'''
+
         matches = []
         res = self.vk.users.search(age_from=params['age_from'], age_to=params['age_to'], city=params['city'],
                                    count=params['count'], sex=params['sex'], sort=params['sort'],
@@ -53,6 +66,8 @@ class VkApi:
         return matches
 
     def get_match_info(self, match):
+        '''Получить информацию о паре'''
+
         match_info = {}
         match_info['url'] = f'https://vk.com/id{match}'
         photo_info = {}
