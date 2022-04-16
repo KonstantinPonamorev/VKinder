@@ -2,6 +2,7 @@ from vkapi import VkApi
 from longpoll import VkBot
 from vk_api.longpoll import VkEventType
 from decouple import config
+from database import NewDataBase, DataBaseWork
 
 
 
@@ -9,7 +10,6 @@ LOGIN = config('LOGIN', default='')
 PASSWORD = config('PASSWORD', default='')
 TOKEN = config('TOKEN', default='')
 URL = config('URL', default='')
-
 DBDIALECT = config('DBDIALECT', default='')
 DBUSERBANE = config('DBUSERBANE', default='')
 DBPASSWORD = config('DBPASSWORD', default='')
@@ -31,6 +31,8 @@ def find_matches(user_id, login, password):
 def chat_bot(login, password):
     vkapi = VkApi(login, password)
     vkbot = VkBot(TOKEN)
+    newdb = NewDataBase(URL)
+    db = DataBaseWork(URL)
     for event in vkbot.longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW:
             if event.to_me:

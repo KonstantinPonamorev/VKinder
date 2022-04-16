@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Table, String, Integer, Column, ForeignKey, insert
+from sqlalchemy import MetaData, Table, String, Integer, Column, ForeignKey, insert, select, delete
 import sqlalchemy
 from decouple import config
 
@@ -23,7 +23,7 @@ class NewDataBase:
         user = Table('user', self.metadata,
                        Column('id', Integer(), primary_key=True),
                        Column('age', Integer(), nullable=False),
-                       Column('sex', String(), nullable=False),
+                       Column('sex', Integer, nullable=False),
                        Column('city_id', Integer(), nullable=False)
                         )
 
@@ -64,10 +64,20 @@ class DataBaseWork:
                                 )
 
     def check_user(self, user_id):
-        ...
+        self.check = select([user]).where(user.c.user_id = user_id)
+        exist = self.connection.execute(self.check)
+        return exist
 
-    def delete_match(self, match_info, user_id):
-        ...
+    def delete_match(self, user_id):
+        self.delete = delete(user_match).where(user_match.c.user_id.like(user_id))
+        self.connection.execute(self.delete)
 
 
-# db = NewDataBase(URL)
+# test_user = {}
+# test_user['id'] = 1
+# test_user['age'] = 20
+# test_user['sex'] = 1
+# test_user['city_id'] = 1
+#
+# db = DataBaseWork(URL)
+# db.insert_user(test_user)
