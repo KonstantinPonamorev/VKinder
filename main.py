@@ -1,12 +1,22 @@
 from vkapi import VkApi
 from longpoll import VkBot
 from vk_api.longpoll import VkEventType
+from decouple import config
 
 
 
-LOGIN =
-PASSWORD =
-TOKEN =
+LOGIN = config('LOGIN', default='')
+PASSWORD = config('PASSWORD', default='')
+TOKEN = config('TOKEN', default='')
+URL = config('URL', default='')
+
+DBDIALECT = config('DBDIALECT', default='')
+DBUSERBANE = config('DBUSERBANE', default='')
+DBPASSWORD = config('DBPASSWORD', default='')
+DBHOST = config('DBHOST', default='')
+DBPORT = config('DBPORT', default='')
+DBDB = config('DBDB', default='')
+URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
 

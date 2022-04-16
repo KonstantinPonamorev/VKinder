@@ -1,12 +1,21 @@
 from sqlalchemy import MetaData, Table, String, Integer, Column, ForeignKey, insert
 import sqlalchemy
+from decouple import config
+
+DBDIALECT = config('DBDIALECT', default='')
+DBUSERBANE = config('DBUSERBANE', default='')
+DBPASSWORD = config('DBPASSWORD', default='')
+DBHOST = config('DBHOST', default='')
+DBPORT = config('DBPORT', default='')
+DBDB = config('DBDB', default='')
+
+URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
+class NewDataBase:
 
-class DataBase:
-
-    def __init__(self):
-        self.engine = sqlalchemy.create_engine('postgresql://postgres:postgre@localhost:5432/postgres')
+    def __init__(self, URL):
+        self.engine = sqlalchemy.create_engine(URL)
         self.connection = self.engine.connect()
         self.metadata = MetaData()
         self.metadata.drop_all(self.engine)
@@ -33,6 +42,14 @@ class DataBase:
 
         self.metadata.create_all(self.engine)
 
+
+
+class DataBaseWork:
+
+    def __init__(self, URL):
+        self.engine = sqlalchemy.create_engine(URL)
+        self.connection = self.engine.connect()
+
     def insert_user(self, user_info):
         self.ins_user = insert(user)
         self.connection.execute(self.ins_user, user_info)
@@ -45,13 +62,12 @@ class DataBase:
                                 {'user_id': user_id,
                                  'match_id': match_info['id']}
                                 )
-    def check_user(self):
-        ... #проверка есть ли пользователь уже в базе
 
-    def check_match(self):
-        ... #проверка есть ли пара в базе
+    def check_user(self, user_id):
+        ...
+
+    def delete_match(self, match_info, user_id):
+        ...
 
 
-
-
-# db = DataBase()
+# db = NewDataBase(URL)
