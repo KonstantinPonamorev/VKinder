@@ -76,7 +76,7 @@ class DataBaseWork:
     def check_user(self, user_id):
         '''Проверка есть ли пользователь в БД'''
 
-        self.check = select([user]).where(user.c.user_id = user_id)
+        self.check = select([user]).where(user.c.user_id == user_id)
         exist = self.connection.execute(self.check)
         return exist
 
