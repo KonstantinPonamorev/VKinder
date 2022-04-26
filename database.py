@@ -137,24 +137,3 @@ class DataBaseWork:
         self.connection.execute(self.delete)
 
 
-
-# newdb = NewDataBase(URL)
-db = DataBaseWork(URL)
-match_id = 5
-if db.check_match(match_id):
-    db.delete_user_match(match_id)
-    db.delete_match(match_id)
-
-# user_info = {}
-# user_info['id'] = 5
-# user_info['sex'] = 1
-# user_info['city_id'] = 1
-# user_info['age'] = 20
-# db.insert_user(user_info)
-# match_info = {}
-# match_info['id'] = 5
-# match_info['url'] = 'test'
-# match_info['photo1_url'] = 'test'
-# match_info['photo2_url'] = 'test'
-# match_info['photo3_url'] = 'test'
-# db.insert_match(match_info, 5)
