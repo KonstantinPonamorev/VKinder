@@ -36,7 +36,7 @@ class VkApi:
         user_info = {}
         user_info['id'] = info['id']
         user_info['sex'] = info['sex']
-        user_info['city'] = info['city']['id']
+        user_info['city_id'] = info['city']['id']
         user_info['age'] = self.calculate_age(info['bdate'])
         return user_info
 

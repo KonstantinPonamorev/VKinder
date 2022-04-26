@@ -2,6 +2,8 @@ from sqlalchemy import MetaData, Table, String, Integer, Column, ForeignKey, ins
 import sqlalchemy
 from decouple import config
 
+
+
 DBDIALECT = config('DBDIALECT', default='')
 DBUSERBANE = config('DBUSERBANE', default='')
 DBPASSWORD = config('DBPASSWORD', default='')
@@ -23,7 +25,7 @@ class NewDataBase:
         self.metadata = MetaData()
         self.metadata.drop_all(self.engine)
 
-        user = Table('user', self.metadata,
+        people = Table('people', self.metadata,
                        Column('id', Integer(), primary_key=True),
                        Column('age', Integer(), nullable=False),
                        Column('sex', Integer, nullable=False),
@@ -55,19 +57,41 @@ class DataBaseWork:
 
         self.engine = sqlalchemy.create_engine(URL)
         self.connection = self.engine.connect()
+        self.metadata = MetaData()
+        self.metadata.drop_all(self.engine)
+
+        self.people = Table('people', self.metadata,
+                       Column('id', Integer(), primary_key=True),
+                       Column('age', Integer(), nullable=False),
+                       Column('sex', Integer, nullable=False),
+                       Column('city_id', Integer(), nullable=False)
+                       )
+
+        self.match = Table('match', self.metadata,
+                      Column('id', Integer(), primary_key=True),
+                      Column('url', String(), nullable=False),
+                      Column('photo1_url', String()),
+                      Column('photo2_url', String()),
+                      Column('photo3_url', String())
+                      )
+
+        self.user_match = Table('user_match', self.metadata,
+                           Column('user_id', ForeignKey('user.id')),
+                           Column('match_id', ForeignKey('match.id'))
+                           )
 
     def insert_user(self, user_info):
         '''Добавление нового пользователя'''
 
-        self.ins_user = insert(user)
+        self.ins_user = insert(self.people)
         self.connection.execute(self.ins_user, user_info)
 
     def insert_match(self, match_info, user_id):
         '''Добавление пар для пользователя'''
 
-        self.ins_match = insert(match)
+        self.ins_match = insert(self.match)
         self.connection.execute(self.ins_match, match_info)
-        self.ins_user_match = insert(user_match)
+        self.ins_user_match = insert(self.user_match)
         self.connection.execute(self.ins_user_match,
                                 {'user_id': user_id,
                                  'match_id': match_info['id']}
@@ -76,22 +100,23 @@ class DataBaseWork:
     def check_user(self, user_id):
         '''Проверка есть ли пользователь в БД'''
 
-        self.check = select([user]).where(user.c.user_id == user_id)
+        self.check = select([self.user]).where(self.user.c.user_id == user_id)
         exist = self.connection.execute(self.check)
         return exist
 
     def delete_match(self, user_id):
         '''Удалить отношения с парами для пользователя'''
 
-        self.delete = delete(user_match).where(user_match.c.user_id.like(user_id))
+        self.delete = delete(self.user_match).where(self.user_match.c.user_id.like(user_id))
         self.connection.execute(self.delete)
 
 
-# test_user = {}
-# test_user['id'] = 1
-# test_user['age'] = 20
-# test_user['sex'] = 1
-# test_user['city_id'] = 1
-#
-# db = DataBaseWork(URL)
-# db.insert_user(test_user)
+
+# newdb = NewDataBase(URL)
+# dbwork = DataBaseWork(URL)
+# user_info = {}
+# user_info['id'] = 1
+# user_info['sex'] = 1
+# user_info['city_id'] = 1
+# user_info['age'] = 20
+# dbwork.insert_user(user_info)
