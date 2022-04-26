@@ -46,7 +46,7 @@ class VkApi:
         params = {}
         params['sort'] = '0'
         params['count'] = 30
-        params['city'] = user_info['city']
+        params['city'] = user_info['city_id']
         if user_info['sex'] == 1:
             params['sex'] = 2
         else:

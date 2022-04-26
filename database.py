@@ -25,7 +25,7 @@ class NewDataBase:
         self.metadata = MetaData()
         self.metadata.drop_all(self.engine)
 
-        people = Table('people', self.metadata,
+        user = Table('user', self.metadata,
                        Column('id', Integer(), primary_key=True),
                        Column('age', Integer(), nullable=False),
                        Column('sex', Integer, nullable=False),
@@ -60,7 +60,7 @@ class DataBaseWork:
         self.metadata = MetaData()
         self.metadata.drop_all(self.engine)
 
-        self.people = Table('people', self.metadata,
+        self.user = Table('user', self.metadata,
                        Column('id', Integer(), primary_key=True),
                        Column('age', Integer(), nullable=False),
                        Column('sex', Integer, nullable=False),
@@ -80,10 +80,25 @@ class DataBaseWork:
                            Column('match_id', ForeignKey('match.id'))
                            )
 
+    def check_user(self, user_id):
+        '''Проверка есть ли пользователь в БД'''
+
+        self.check = select([self.user]).where(self.user.c.id == user_id)
+        exist = self.connection.execute(self.check)
+        return exist
+
+    def check_match(self, match_id):
+        '''Проверка есть ли совпадение в БД'''
+
+        self.check = select([self.match]).where(self.match.c.id == match_id)
+        exist = self.connection.execute(self.check)
+
+        return exist
+
     def insert_user(self, user_info):
         '''Добавление нового пользователя'''
 
-        self.ins_user = insert(self.people)
+        self.ins_user = insert(self.user)
         self.connection.execute(self.ins_user, user_info)
 
     def insert_match(self, match_info, user_id):
@@ -97,26 +112,49 @@ class DataBaseWork:
                                  'match_id': match_info['id']}
                                 )
 
-    def check_user(self, user_id):
-        '''Проверка есть ли пользователь в БД'''
-
-        self.check = select([self.user]).where(self.user.c.user_id == user_id)
-        exist = self.connection.execute(self.check)
-        return exist
-
-    def delete_match(self, user_id):
+    def delete_user_match(self, user_id):
         '''Удалить отношения с парами для пользователя'''
 
-        self.delete = delete(self.user_match).where(self.user_match.c.user_id.like(user_id))
+        self.delete = delete(self.user_match).where(self.user_match.c.user_id == user_id)
+        self.connection.execute(self.delete)
+
+    def delete_match_user(self, match_id):
+        '''Удалить отношения с парами для пары'''
+
+        self.delete = delete(self.user_match).where(self.user_match.c.match_id == match_id)
+        self.connection.execute(self.delete)
+
+    def delete_user(self, user_id):
+        '''Удалить пользователя'''
+
+        self.delete = delete(self.user).where(self.user.c.id == user_id)
+        self.connection.execute(self.delete)
+
+    def delete_match(self, match_id):
+        '''Удалить пары'''
+
+        self.delete = delete(self.match).where(self.match.c.id == match_id)
         self.connection.execute(self.delete)
 
 
 
 # newdb = NewDataBase(URL)
-# dbwork = DataBaseWork(URL)
+db = DataBaseWork(URL)
+match_id = 5
+if db.check_match(match_id):
+    db.delete_user_match(match_id)
+    db.delete_match(match_id)
+
 # user_info = {}
-# user_info['id'] = 1
+# user_info['id'] = 5
 # user_info['sex'] = 1
 # user_info['city_id'] = 1
 # user_info['age'] = 20
-# dbwork.insert_user(user_info)
+# db.insert_user(user_info)
+# match_info = {}
+# match_info['id'] = 5
+# match_info['url'] = 'test'
+# match_info['photo1_url'] = 'test'
+# match_info['photo2_url'] = 'test'
+# match_info['photo3_url'] = 'test'
+# db.insert_match(match_info, 5)

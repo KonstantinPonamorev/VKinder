@@ -27,6 +27,11 @@ def find_matches(user_id, login, password):
     vkapi = VkApi(login, password)
     user_info = vkapi.get_user_info(user_id)
     convert_user_info = vkapi.convert_user_info(user_info)
+    if db.check_user(convert_user_info['id']):
+        db.delete_user_match(convert_user_info['id'])
+        db.delete_user(convert_user_info['id'])
+    else:
+        ...
     db.insert_user(convert_user_info)
     params = vkapi.get_search_params(convert_user_info)
     matches = vkapi.search_people(params)
@@ -52,6 +57,11 @@ def chat_bot(login, password):
                     matches = find_matches(event.user_id, login, password)
                     for match in matches:
                         match_info = vkapi.get_match_info(int(match))
+                        if db.check_match(match_info['id']):
+                            db.delete_match_user(match_info['id'])
+                            db.delete_match(match_info['id'])
+                        else:
+                            ...
                         db.insert_match(match_info, event.user_id)
                         vkbot.write_msg(event.user_id, f'{match_info["url"]} \n'
                                                        f'{match_info["photo1"]} \n'
@@ -64,7 +74,6 @@ def chat_bot(login, password):
                                     request = event.text
                                     if request == '+':
                                         vkbot.write_msg(event.user_id, "Скорее знакомься ;)")
-                                        break
                                     if request == '-':
                                         pass
                 else:
