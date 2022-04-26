@@ -64,9 +64,9 @@ def chat_bot(login, password):
                             ...
                         db.insert_match(match_info, event.user_id)
                         vkbot.write_msg(event.user_id, f'{match_info["url"]} \n'
-                                                       f'{match_info["photo1"]} \n'
-                                                       f'{match_info["photo2"]} \n'
-                                                       f'{match_info["photo3"]} \n'
+                                                       f'{match_info["photo1_url"]} \n'
+                                                       f'{match_info["photo2_url"]} \n'
+                                                       f'{match_info["photo3_url"]} \n'
                                                        f'Нравится? (+\-)')
                         for event in vkbot.longpoll.listen():
                             if event.type == VkEventType.MESSAGE_NEW:

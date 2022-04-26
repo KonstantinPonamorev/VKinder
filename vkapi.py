@@ -78,7 +78,7 @@ class VkApi:
         for item in photo['items']:
             photo_info[item['sizes'][-1]['url']] = item['likes']['count'] + item['comments']['count']
         three_best_photos = heapq.nlargest(3, photo_info, key=lambda k: photo_info[k])
-        match_info['photo1'] = three_best_photos[0]
-        match_info['photo2'] = three_best_photos[1]
-        match_info['photo3'] = three_best_photos[2]
+        match_info['photo1_url'] = three_best_photos[0]
+        match_info['photo2_url'] = three_best_photos[1]
+        match_info['photo3_url'] = three_best_photos[2]
         return match_info
