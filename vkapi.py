@@ -27,12 +27,14 @@ class VkApi:
         '''Получить информацию о пользователе'''
 
         res = self.vk.users.get(user_ids=user_id, fields='bdate, sex, city')[0]
+        res['id'] = user_id
         return res
 
     def convert_user_info(self, info):
         '''Сконвертировать инфо о пользователе'''
 
         user_info = {}
+        user_info['id'] = info['id']
         user_info['sex'] = info['sex']
         user_info['city'] = info['city']['id']
         user_info['age'] = self.calculate_age(info['bdate'])
@@ -43,7 +45,7 @@ class VkApi:
 
         params = {}
         params['sort'] = '0'
-        params['count'] = 20
+        params['count'] = 30
         params['city'] = user_info['city']
         if user_info['sex'] == 1:
             params['sex'] = 2
@@ -69,6 +71,7 @@ class VkApi:
         '''Получить информацию о паре'''
 
         match_info = {}
+        match_info['id'] = match
         match_info['url'] = f'https://vk.com/id{match}'
         photo_info = {}
         photo = self.vk.photos.get(owner_id=match, album_id='profile', extended='1')
