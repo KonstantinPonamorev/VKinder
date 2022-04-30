@@ -18,4 +18,8 @@ class VkBot:
 
         self.vk.method('messages.send', {'user_id': user_id, 'message': message,  'random_id': randrange(10 ** 7)})
 
+    def send_photo(self, user_id, url):
+        '''Отправка фото'''
+
+        self.vk.method('messages.send', {'user_id': user_id, 'attachment': url, 'random_id': randrange(10 ** 7)})
 

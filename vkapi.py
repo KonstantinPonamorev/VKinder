@@ -54,6 +54,8 @@ class VkApi:
         params['age_from'] = user_info['age'] - 3
         params['age_to'] = user_info['age'] + 3
         params['status'] = 6
+        params['has_photo'] = 1
+        params['fields'] = 'is_closed=False'
         return params
 
     def search_people(self, params):
@@ -62,7 +64,7 @@ class VkApi:
         matches = []
         res = self.vk.users.search(age_from=params['age_from'], age_to=params['age_to'], city=params['city'],
                                    count=params['count'], sex=params['sex'], sort=params['sort'],
-                                   status=params['status'])
+                                   status=params['status'], has_photo=['has_photo'], fields=params['fields'])
         for item in res['items']:
             matches.append(item['id'])
         return matches
@@ -78,6 +80,15 @@ class VkApi:
         for item in photo['items']:
             photo_info[item['sizes'][-1]['url']] = item['likes']['count'] + item['comments']['count']
         three_best_photos = heapq.nlargest(3, photo_info, key=lambda k: photo_info[k])
+        if len(three_best_photos) == 0:
+            three_best_photos.append('Больше фото нет:(')
+            three_best_photos.append('Больше фото нет:(')
+            three_best_photos.append('Больше фото нет:(')
+        if len(three_best_photos) == 1:
+            three_best_photos.append('Больше фото нет:(')
+            three_best_photos.append('Больше фото нет:(')
+        if len(three_best_photos) == 2:
+            three_best_photos.append('Больше фото нет:(')
         match_info['photo1_url'] = three_best_photos[0]
         match_info['photo2_url'] = three_best_photos[1]
         match_info['photo3_url'] = three_best_photos[2]

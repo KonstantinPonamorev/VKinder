@@ -68,16 +68,16 @@ def chat_bot(login, password):
                                                        f'{match_info["photo2_url"]} \n'
                                                        f'{match_info["photo3_url"]} \n'
                                                        f'Нравится? (+\-)')
-                        for event in vkbot.longpoll.listen():
-                            if event.type == VkEventType.MESSAGE_NEW:
-                                if event.to_me:
-                                    request = event.text
+                        for answer in vkbot.longpoll.listen():
+                            if answer.type == VkEventType.MESSAGE_NEW:
+                                if answer.to_me:
+                                    request = answer.text
                                     if request == '+':
-                                        vkbot.write_msg(event.user_id, "Скорее знакомься ;)")
+                                        vkbot.write_msg(answer.user_id, "Скорее знакомься ;)")
                                     if request == '-':
-                                        pass
+                                        vkbot.write_msg(answer.user_id, "Next")
                 else:
-                    vkbot.write_msg(event.user_id, "Не поняла вашего ответа...")
+                    vkbot.write_msg(event.user_id, "Не понял вашего ответа...")
 
 
 
