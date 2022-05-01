@@ -26,8 +26,8 @@ def check_and_ask_info(user_id, user_info):
     vkbot = VkBot(TOKEN)
     if 'city' not in user_info:
         vkbot.write_msg(user_id, f'Укажите идентификатор вашего города \n'
-                                 f'(можно посмотреть в адресной строке при поиске по городу \n'
-                                 f'"city%##=__"')
+                                 f'(можно посмотреть в адресной строке при поиске по городу: \n'
+                                 f'"...city%##=__... , где __ - id вашего города"')
         for event in vkbot.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 if event.to_me:
@@ -86,7 +86,7 @@ def chat_bot(login, password):
             if event.to_me:
                 request = event.text.lower()
                 if request == "привет":
-                    vkbot.write_msg(event.user_id, f"Хай, {event.user_id} \n"
+                    vkbot.write_msg(event.user_id, f"Привет, путник! \n"
                                                    f"Если хочешь найти пару - напиши '+'")
                 elif request == "пока":
                     vkbot.write_msg(event.user_id, "Пока((")
@@ -119,7 +119,9 @@ def chat_bot(login, password):
                                                                         f'"+" - нашел пару \n'
                                                                         f'"-" - не нашел->далее')
                 else:
-                    vkbot.write_msg(event.user_id, "Не понял вашего ответа...")
+                    vkbot.write_msg(event.user_id, f"'Привет' - поздороваться \n"
+                                                   f"'Пока' - попрощаться \n"
+                                                   f"'+' - начать поиск пары")
 
 
 
