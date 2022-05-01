@@ -30,22 +30,12 @@ class VkApi:
         res['id'] = user_id
         return res
 
-    def convert_user_info(self, info):
-        '''Сконвертировать инфо о пользователе'''
-
-        user_info = {}
-        user_info['id'] = info['id']
-        user_info['sex'] = info['sex']
-        user_info['city_id'] = info['city']['id']
-        user_info['age'] = self.calculate_age(info['bdate'])
-        return user_info
-
     def get_search_params(self, user_info):
         '''Получить параметры для подбора пары'''
 
         params = {}
         params['sort'] = '0'
-        params['count'] = 30
+        params['count'] = 100
         params['city'] = user_info['city_id']
         if user_info['sex'] == 1:
             params['sex'] = 2
@@ -81,12 +71,12 @@ class VkApi:
             photo_info[item['sizes'][-1]['url']] = item['likes']['count'] + item['comments']['count']
         three_best_photos = heapq.nlargest(3, photo_info, key=lambda k: photo_info[k])
         if len(three_best_photos) == 0:
-            three_best_photos.append('Больше фото нет:(')
-            three_best_photos.append('Больше фото нет:(')
-            three_best_photos.append('Больше фото нет:(')
+            three_best_photos.append('Фото нет:(')
+            three_best_photos.append('')
+            three_best_photos.append('')
         if len(three_best_photos) == 1:
             three_best_photos.append('Больше фото нет:(')
-            three_best_photos.append('Больше фото нет:(')
+            three_best_photos.append('')
         if len(three_best_photos) == 2:
             three_best_photos.append('Больше фото нет:(')
         match_info['photo1_url'] = three_best_photos[0]

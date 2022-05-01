@@ -20,13 +20,49 @@ URL = f'{DBDIALECT}://{DBUSERBANE}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBDB}'
 
 
 
+def check_and_ask_info(user_id, user_info):
+    '''получаем у пользователя недостающую информацию'''
+
+    vkbot = VkBot(TOKEN)
+    if 'city' not in user_info:
+        vkbot.write_msg(user_id, f'Укажите идентификатор вашего города \n'
+                                 f'(можно посмотреть в адресной строке при поиске по городу \n'
+                                 f'"city%##=__"')
+        for event in vkbot.longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW:
+                if event.to_me:
+                    request = event.text
+                    if request.isdigit():
+                        user_info['city_id'] = int(request)
+                        break
+                    else:
+                        vkbot.write_msg(user_id, f'Не понимаю :( \n'
+                                                 f'Напишите id города числом')
+    else:
+        user_info['city_id'] = user_info['city']['id']
+    if 'age' not in user_info:
+        vkbot.write_msg(user_id, f'Укажите ваш возраст \n'
+                                 f'(числом до 80 :) ) ')
+        for event in vkbot.longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW:
+                if event.to_me:
+                    request = event.text
+                    if request.isdigit() and (int(request)<80):
+                        user_info['age'] = int(request)
+                        break
+                    else:
+                        vkbot.write_msg(user_id, f'Не понимаю :( \n'
+                                                 f'Напишите возраст числом до 80')
+    return user_info
+
+
 def find_matches(user_id, login, password):
     '''Поиск совпадений и запись в базу данных'''
 
     db = DataBaseWork(URL)
     vkapi = VkApi(login, password)
     user_info = vkapi.get_user_info(user_id)
-    convert_user_info = vkapi.convert_user_info(user_info)
+    convert_user_info = check_and_ask_info(user_id, user_info)
     if db.check_user(convert_user_info['id']):
         db.delete_user_match(convert_user_info['id'])
         db.delete_user(convert_user_info['id'])
@@ -44,10 +80,11 @@ def chat_bot(login, password):
     vkbot = VkBot(TOKEN)
     newdb = NewDataBase(URL)
     db = DataBaseWork(URL)
+
     for event in vkbot.longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW:
             if event.to_me:
-                request = event.text
+                request = event.text.lower()
                 if request == "привет":
                     vkbot.write_msg(event.user_id, f"Хай, {event.user_id} \n"
                                                    f"Если хочешь найти пару - напиши '+'")
@@ -74,8 +111,13 @@ def chat_bot(login, password):
                                     request = answer.text
                                     if request == '+':
                                         vkbot.write_msg(answer.user_id, "Скорее знакомься ;)")
-                                    if request == '-':
+                                    elif request == '-':
                                         vkbot.write_msg(answer.user_id, "Next")
+                                        break
+                                    else:
+                                        vkbot.write_msg(answer.user_id, f'Напиши: \n'
+                                                                        f'"+" - нашел пару \n'
+                                                                        f'"-" - не нашел->далее')
                 else:
                     vkbot.write_msg(event.user_id, "Не понял вашего ответа...")
 
