@@ -24,6 +24,7 @@ def check_and_ask_info(user_id, user_info):
     '''получаем у пользователя недостающую информацию'''
 
     vkbot = VkBot(TOKEN)
+
     if 'city' not in user_info:
         vkbot.write_msg(user_id, f'Укажите идентификатор вашего города \n'
                                  f'(можно посмотреть в адресной строке при поиске по городу: \n'
@@ -61,6 +62,7 @@ def find_matches(user_id, login, password):
 
     db = DataBaseWork(URL)
     vkapi = VkApi(login, password)
+
     user_info = vkapi.get_user_info(user_id)
     convert_user_info = check_and_ask_info(user_id, user_info)
     if db.check_user(convert_user_info['id']):
